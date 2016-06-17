@@ -14,8 +14,6 @@ public class Controller {
 
     static void move_tile(KeyEvent ke) {
 
-
-
         switch (ke.getCode()) {
             case UP:
                 for (Integer integer : iSet) {
@@ -24,7 +22,7 @@ public class Controller {
                     System.out.printf("Gotcha: Integer = %d",integer);
 
                     Tile t = tile_ray[i][j];
-                    
+
                     if (j%5 == 0) {
                         System.out.println("Hit the wall");
                     } else {
