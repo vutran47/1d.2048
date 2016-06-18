@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 import static sample.Controller.iSet;
-import static sample.Controller.tile_ray;
+import static sample.Controller.XTile;
 
 public class Main extends Application{
 
@@ -28,15 +28,14 @@ public class Main extends Application{
         background.setY(0);
 
         // Prepare tile placeholders
-        Rectangle rect_ray[][] = new Rectangle[5][5];
         for (int i = 0; i < 5 ; i++) {
             for (int j = 0; j < 5; j++) {
-                rect_ray[i][j] = new Rectangle(50,50,Color.LIGHTYELLOW);
-                group.getChildren().add(rect_ray[i][j]);
-                rect_ray[i][j].setX(53*i+4);
-                rect_ray[i][j].setY(53*j+4);
-                rect_ray[i][j].setArcWidth(4);
-                rect_ray[i][j].setArcHeight(4);
+                Rectangle rect = new Rectangle(50,50,Color.LIGHTYELLOW);
+                group.getChildren().add(rect);
+                rect.setX(53*i+4);
+                rect.setY(53*j+4);
+                rect.setArcWidth(4);
+                rect.setArcHeight(4);
             }
         }
 
@@ -45,25 +44,26 @@ public class Main extends Application{
         // static import Controller.iSet
         int count = 0;
         while (iSet.size() < 5) {
-            int i = new Random().nextInt(25);
-            boolean check = iSet.add(i);
-            if (check) System.out.println("inserted a number in iSet = " + i);
+            iSet.add(new Random().nextInt(25));
         }
 
+        // an array of Tile is not necessary,
+        // make column and row index become properties of the instance
+        // so I can get them out and sort them whenever required
         for (int i = 0; i < 5 ; i++) { // i being COLUMN
             for (int j = 0; j < 5; j++) { // j being ROW
                 if (count < 5 && iSet.contains(i*5+j)) {
-                    tile_ray[i][j] = new Tile(50,50,Color.DARKORCHID);
-                    group.getChildren().add(tile_ray[i][j]);
-                    tile_ray[i][j].setLayoutX(53*i+4);
-                    tile_ray[i][j].setLayoutY(53*j+4);
-                    tile_ray[i][j].setValue(new Random().nextDouble() > 0.8 ? 4 : 2);
+                    Tile tile = new Tile(50,50,Color.DARKORCHID, i, j);
+                    group.getChildren().add(tile);
+                    tile.setLayoutX(53*i+4);
+                    tile.setLayoutY(53*j+4);
+                    tile.setValue(new Random().nextDouble() > 0.8 ? 4 : 2);
                     count++;
+                    XTile.add(tile);
                 }
             }
         }
         //endregion
-
 
 
         // Attach all to the parent layout
