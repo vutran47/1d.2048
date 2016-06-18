@@ -57,6 +57,16 @@ class Tile extends Label {
         setJ_(j_);
     }
 
+    public Tile(int incremental_index) {
+        super();
+        setPrefSize(50,50);
+        setBackground(new Background(new BackgroundFill(Color.DARKORCHID, new CornerRadii(2), null)));
+        setFont(new Font(25));
+        setTextFill(Color.WHITE);
+        setAlignment(Pos.CENTER);
+        setInc_index(incremental_index);
+    }
+
     public void setValue(int i) {
         value = i;
         setText(String.valueOf(i));

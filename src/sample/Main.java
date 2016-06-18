@@ -11,13 +11,14 @@ import java.util.Random;
 
 import static sample.Controller.iSet;
 import static sample.Controller.XTile;
+import static sample.Controller.group;
 
 public class Main extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        Group group = new Group();
+        group = new Group();
         group.prefHeight(270);
         group.prefWidth(270);
 
@@ -42,8 +43,9 @@ public class Main extends Application{
         //region PREPARE RANDOM TILES
 
         // static import Controller.iSet
+        int randommake = 5;
         int count = 0;
-        while (iSet.size() < 5) {
+        while (iSet.size() < randommake) {
             iSet.add(new Random().nextInt(25));
         }
 
@@ -52,7 +54,7 @@ public class Main extends Application{
         // so I can get them out and sort them whenever required
         for (int i = 0; i < 5 ; i++) { // i being COLUMN
             for (int j = 0; j < 5; j++) { // j being ROW
-                if (count < 5 && iSet.contains(i*5+j)) {
+                if (count < randommake && iSet.contains(i*5+j)) {
                     Tile tile = new Tile(50,50,Color.DARKORCHID, i, j);
                     group.getChildren().add(tile);
                     tile.setLayoutX(53*i+4);
@@ -75,6 +77,10 @@ public class Main extends Application{
         scene.setOnKeyPressed(Controller::move_tile);
 
         //endregion
+    }
+
+    void remove_a_tile (Group gp, Tile tl) {
+        gp.getChildren().remove(tl);
     }
 
 
