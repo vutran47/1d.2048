@@ -17,6 +17,12 @@ public class Components {
 }
 
 class Tile extends Label {
+    private int value;
+
+    public int getValue() {
+        return value;
+    }
+
     public Tile(int a, int b, Paint color) {
         super();
         setPrefSize(a,b);
@@ -27,6 +33,7 @@ class Tile extends Label {
     }
 
     public void setValue(int i) {
+        value = i;
         setText(String.valueOf(i));
     }
 

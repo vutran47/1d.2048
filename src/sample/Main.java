@@ -44,7 +44,7 @@ public class Main extends Application{
 
         // static import Controller.iSet
         int count = 0;
-        while (iSet.size() < 3) {
+        while (iSet.size() < 5) {
             int i = new Random().nextInt(25);
             boolean check = iSet.add(i);
             if (check) System.out.println("inserted a number in iSet = " + i);
@@ -52,8 +52,7 @@ public class Main extends Application{
 
         for (int i = 0; i < 5 ; i++) { // i being COLUMN
             for (int j = 0; j < 5; j++) { // j being ROW
-                if (count < 3 && iSet.contains(i*5+j)) {
-                    System.out.printf("i x j = %d x %d \n", i, j );
+                if (count < 5 && iSet.contains(i*5+j)) {
                     tile_ray[i][j] = new Tile(50,50,Color.DARKORCHID);
                     group.getChildren().add(tile_ray[i][j]);
                     tile_ray[i][j].setLayoutX(53*i+4);
