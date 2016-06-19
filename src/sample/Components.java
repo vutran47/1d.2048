@@ -18,17 +18,19 @@ public class Components {
 
 class Tile extends Label {
     private int value;
-    int i_;
-    int j_;
+    private int i_;
+    private int j_;
 
-    public int getJ_() {
-        return j_;
+    public void setValue(int i) {
+        value = i;
+        setText(String.valueOf(i));
     }
 
-    public void setJ_(int j_) {
-        this.j_ = j_;
+    public int getValue() {
+        return value;
     }
 
+    //region SETTER & GETTER for i_ & j_: these are compelling!
     public int getI_() {
         return i_;
     }
@@ -37,13 +39,22 @@ class Tile extends Label {
         this.i_ = i_;
     }
 
+    public int getJ_() {
+        return j_;
+    }
+
+    public void setJ_(int j_) {
+        this.j_ = j_;
+    }
+    //endregion
+
     public int getInc_index() {
-        return i_*5+j_;
+        return getI_()*5+getJ_();
     }
 
     public void setInc_index(int inc_index) {
         setI_(Math.floorDiv(inc_index, 5));
-        setJ_(inc_index - 5*i_);
+        setJ_(inc_index - 5*getI_());
     }
 
     public Tile(int a, int b, Paint color, int i_, int j_) {
@@ -67,12 +78,5 @@ class Tile extends Label {
         setInc_index(incremental_index);
     }
 
-    public void setValue(int i) {
-        value = i;
-        setText(String.valueOf(i));
-    }
 
-    public int getValue() {
-        return value;
-    }
 }

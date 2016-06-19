@@ -43,7 +43,7 @@ public class Main extends Application{
         //region PREPARE RANDOM TILES
 
         // static import Controller.iSet
-        int randommake = 5;
+        int randommake = 1;
         int count = 0;
         while (iSet.size() < randommake) {
             iSet.add(new Random().nextInt(25));
@@ -65,6 +65,7 @@ public class Main extends Application{
                 }
             }
         }
+        System.out.println("Init " + XTile.size() + " tiles");
         //endregion
 
 
