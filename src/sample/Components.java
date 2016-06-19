@@ -5,25 +5,51 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
-/**
- * Created by Elderaine on 17/06/2016.
- */
-public class Components {
+import java.util.TreeMap;
 
+public class Components {
+    private static TreeMap<Integer, String> mydict;
+
+    // Init the dictionary for color - value
+    static {
+        mydict = new TreeMap<>();
+        mydict.put(2, "#F4FF21");
+        mydict.put(4, "#FFBC21");
+        mydict.put(8, "#FAD18E");
+        mydict.put(16, "#FCD3C2");
+        mydict.put(32, "#FA7A7A");
+        mydict.put(64, "#FFB0C8");
+        mydict.put(128, "#F79CF6");
+        mydict.put(256, "#6879E3");
+        mydict.put(512, "#66C961");
+    }
+
+    public static String getColorForKey(int i) {
+        return mydict.get(i);
+    }
 }
 
 class Tile extends Label {
     private int value;
     private int i_;
     private int j_;
+    private boolean mergable;
+
+    public boolean isMergable() {
+        return mergable;
+    }
+
+    public void setMergable(boolean mergable) {
+        this.mergable = mergable;
+    }
 
     public void setValue(int i) {
         value = i;
         setText(String.valueOf(i));
+        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
     }
 
     public int getValue() {
@@ -57,26 +83,21 @@ class Tile extends Label {
         setJ_(inc_index - 5*getI_());
     }
 
-    public Tile(int a, int b, Paint color, int i_, int j_) {
-        super();
-        setPrefSize(a,b);
-        setBackground(new Background(new BackgroundFill(color, new CornerRadii(2), null)));
-        setFont(new Font(25));
-        setTextFill(Color.WHITE);
-        setAlignment(Pos.CENTER);
-        setI_(i_);
-        setJ_(j_);
+    public void setLayoutCordinate() {
+        setLayoutX(53*getI_()+4);
+        setLayoutY(53*getJ_()+4);
     }
 
-    public Tile(int incremental_index) {
+    // Constructors
+    public Tile(int incremental_index, int value) {
         super();
         setPrefSize(50,50);
-        setBackground(new Background(new BackgroundFill(Color.DARKORCHID, new CornerRadii(2), null)));
-        setFont(new Font(25));
-        setTextFill(Color.WHITE);
+        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
+        setFont(Font.font("Impact", 24));
+        setTextFill(Paint.valueOf("#FFFFFF"));
         setAlignment(Pos.CENTER);
         setInc_index(incremental_index);
+        setValue(value);
+        setMergable(true);
     }
-
-
 }
