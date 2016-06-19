@@ -18,9 +18,12 @@ public class Controller {
     static HashSet<Integer> iSet = new HashSet<>();
     static ArrayList<Tile> XTile = new ArrayList<>();
     static Group group;
+    private static boolean animationPlaying = false;
     
     static void move_tile (KeyEvent ke) {
+        if (animationPlaying) return;
         KeyCode kc = ke.getCode();
+        animationPlaying = true;
         for (Tile tile : XTile) {
             tile.setMergable(true);
         }
@@ -134,15 +137,16 @@ public class Controller {
     }
 
     private static void spawning () {
+        int count = 0;
+
         if (XTile.size() == 25) {
-            System.out.println("GAME OVER");
-            return;
+            animationPlaying = false;
         }
 
         iSet.clear();
         iSet.addAll(XTile.stream().map(Tile::getInc_index).collect(Collectors.toList()));
         int spawnz = Math.min(25-XTile.size(), 2);
-        int count = 0;
+
         while (count < spawnz) {
             int i = new Random().nextInt(25);
             if (!iSet.contains(i)) {
@@ -161,15 +165,20 @@ public class Controller {
                 st.setToY(1);
                 st.setDelay(Duration.millis(120));
 
-                FadeTransition ft = new FadeTransition(Duration.millis(400),tile);
+                FadeTransition ft = new FadeTransition(Duration.millis(250),tile);
                 ft.setFromValue(0);
                 ft.setToValue(1);
                 ft.setDelay(Duration.millis(120));
 
                 st.play();
                 ft.play();
+
+                ft.setOnFinished(event -> animationPlaying = false);
             }
         }
+
+        // Invoke gameover_annouce when all direction movings are not possible
+        // think about it later
     }
 }
 

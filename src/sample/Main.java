@@ -59,11 +59,15 @@ public class Main extends Application{
         primaryStage.show();
 
         //region EVENT HANDLING
+
         scene.setOnKeyPressed(Controller::move_tile);
 
         //endregion
     }
 
+    static void gameover_annouce () {
+        System.out.println("GAME FUCKING OVER FUCK YOU");;
+    }
 
     public static void main(String[] args) {
         launch(args);
