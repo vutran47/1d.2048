@@ -15,10 +15,12 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Controller {
+    // Static attributes and collections
     static HashSet<Integer> iSet = new HashSet<>();
     static ArrayList<Tile> XTile = new ArrayList<>();
     static Group group;
     private static boolean animationPlaying = false;
+
     
     static void move_tile (KeyEvent ke) {
         if (animationPlaying) return;
@@ -28,7 +30,7 @@ public class Controller {
             tile.setMergable(true);
         }
         switch (kc) {
-
+            //region Prepare Data per Swipe direction
             case UP:
                 for (int i = 0; i < 5; i++) { // Browse columns
                     int finalI = i;
@@ -116,8 +118,9 @@ public class Controller {
                 }
 
                 break;
+            //endregion
 
-            //region Delete tiles
+            //region Supplemental controls for Delete & Spawning Tiles manually
             case Q:
                 if (XTile.size() > 0) {
                     int i = XTile.size();
@@ -152,33 +155,50 @@ public class Controller {
             if (!iSet.contains(i)) {
                 iSet.add(i);
                 count++;
-                Tile tile = new Tile(i, new Random().nextDouble() > 0.9 ? 4 : 2);
+                Tile tile = new Tile(i, Math.random() > 0.9 ? 4 : 2);
                 tile.setOpacity(0);
                 group.getChildren().add(tile);
                 tile.setLayoutCordinate();
                 XTile.add(tile);
 
-                ScaleTransition st = new ScaleTransition(Duration.millis(200), tile);
+                //region Animation in & out for new tile
+                ScaleTransition st = new ScaleTransition(Duration.millis(220), tile);
                 st.setFromY(0);
                 st.setFromX(0);
                 st.setToX(1);
                 st.setToY(1);
-                st.setDelay(Duration.millis(120));
+                st.setDelay(Duration.millis(300));
 
-                FadeTransition ft = new FadeTransition(Duration.millis(250),tile);
+                FadeTransition ft = new FadeTransition(Duration.millis(220),tile);
                 ft.setFromValue(0);
                 ft.setToValue(1);
-                ft.setDelay(Duration.millis(120));
+                ft.setDelay(Duration.millis(300));
 
                 st.play();
                 ft.play();
 
                 ft.setOnFinished(event -> animationPlaying = false);
+                //endregion
             }
         }
 
         // Invoke gameover_annouce when all direction movings are not possible
         // think about it later
+    }
+
+    private static boolean gameOver () {
+
+        if (XTile.size() < 25) {
+            return false;
+        } else {
+            ArrayList<Tile> sortXtile = XTile.stream()
+                    .sorted((o1, o2) -> o1.getInc_index() - o2.getInc_index())
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+
+        }
+
+        return false;
     }
 }
 

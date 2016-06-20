@@ -39,8 +39,7 @@ public class Main extends Application{
             }
         }
 
-        // PREPARE RANDOM TILES
-        // static import Controller.iSet
+        // PREPARE SOME RANDOM TILES
         // make column and row index become properties of the instance
         // so I can get them out and sort them whenever required
         while (iSet.size() < 3) {
@@ -56,10 +55,10 @@ public class Main extends Application{
         // Attach all to the parent layout
         Scene scene = new Scene(new BorderPane(group), 350, 350);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("2048 Bach Mai version");
         primaryStage.show();
 
         //region EVENT HANDLING
-
         scene.setOnKeyPressed(Controller::move_tile);
 
         //endregion

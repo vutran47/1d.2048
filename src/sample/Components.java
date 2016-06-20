@@ -32,10 +32,13 @@ public class Components {
     }
 }
 
+
 class Tile extends Label {
+    //region Necessary Instance properties and their Getters & Setters
     private int value;
     private int i_;
     private int j_;
+
     private boolean mergable;
 
     public boolean isMergable() {
@@ -56,7 +59,6 @@ class Tile extends Label {
         return value;
     }
 
-    //region SETTER & GETTER for i_ & j_: these are compelling!
     public int getI_() {
         return i_;
     }
@@ -74,6 +76,7 @@ class Tile extends Label {
     }
     //endregion
 
+    // Special attributes for Tile: incremental index:
     public int getInc_index() {
         return getI_()*5+getJ_();
     }
@@ -83,18 +86,19 @@ class Tile extends Label {
         setJ_(inc_index - 5*getI_());
     }
 
+    // Layout method for Tile depending on its Row and Column
     public void setLayoutCordinate() {
         setLayoutX(53*getI_()+4);
         setLayoutY(53*getJ_()+4);
     }
 
-    // Constructors
+    // CONSTRUCTOR
     public Tile(int incremental_index, int value) {
         super();
         setPrefSize(50,50);
         setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
         setFont(Font.font("Impact", 24));
-        setTextFill(Paint.valueOf("#FFFFFF"));
+        setTextFill(Paint.valueOf("#F0F7ED"));
         setAlignment(Pos.CENTER);
         setInc_index(incremental_index);
         setValue(value);
