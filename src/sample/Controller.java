@@ -20,6 +20,7 @@ public class Controller {
     static ArrayList<Tile> XTile = new ArrayList<>();
     static Group group;
     private static boolean animationPlaying = false;
+    static Main _main;
 
     
     static void move_tile (KeyEvent ke) {
@@ -137,6 +138,23 @@ public class Controller {
             //endregion
         }
         spawning();
+        _main.gameover_annouce(Controller.isOver());
+    }
+
+    static void clear_all () {
+        group.getChildren().removeAll(XTile);
+        XTile.clear();
+        iSet.clear();
+
+        while (iSet.size() < 3) {
+            int i = new Random().nextInt(25);
+            if (iSet.add(i)) {
+                Tile tile = new Tile(i ,new Random().nextDouble() > 0.9 ? 4 : 2);
+                group.getChildren().add(tile);
+                tile.setLayoutCordinate();
+                XTile.add(tile);
+            }
+        }
     }
 
     private static void spawning () {
@@ -181,24 +199,31 @@ public class Controller {
                 //endregion
             }
         }
-
-        // Invoke gameover_annouce when all direction movings are not possible
-        // think about it later
     }
 
-    private static boolean gameOver () {
-
+    private static boolean isOver () {
+        // Challenge: checking game over condition
         if (XTile.size() < 25) {
             return false;
         } else {
-            ArrayList<Tile> sortXtile = XTile.stream()
+            boolean check_v = false;
+            boolean check_h = false;
+            ArrayList<Tile> xtc = XTile.stream()
                     .sorted((o1, o2) -> o1.getInc_index() - o2.getInc_index())
                     .collect(Collectors.toCollection(ArrayList::new));
 
+            int i = 0;
+            while (i < 5 & !check_h & !check_v) {
+                for (int j = 0; j < 4; j++) {
+                    check_v = xtc.get(j+i*5).getValue() == xtc.get(i*5+j+1).getValue();
+                    check_h = xtc.get(i+j*5).getValue() == xtc.get(i+(j+1)*5).getValue();
+                    if (check_h|check_v) break;
+                }
+                i++;
+            }
 
+            return !check_h && !check_v;
         }
-
-        return false;
     }
 }
 
