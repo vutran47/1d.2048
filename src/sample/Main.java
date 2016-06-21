@@ -100,16 +100,16 @@ public class Main extends Application{
             vbox.setPrefSize(270,270);
 
             // Animation for the Vbox to show
-            FadeTransition ft = new FadeTransition(Duration.millis(200),vbox);
+            FadeTransition ft = new FadeTransition(Duration.millis(100),vbox);
             ft.setDelay(Duration.millis(1000));
             ft.setFromValue(0);
             ft.setToValue(0.75);
             ft.play();
 
-            ScaleTransition st = new ScaleTransition(Duration.millis(200),vbox);
+            ScaleTransition st = new ScaleTransition(Duration.millis(100),vbox);
             st.setDelay(Duration.millis(1000));
-            st.setFromY(0.5);
-            st.setFromX(0.5);
+            st.setFromY(0.8);
+            st.setFromX(0.8);
             st.setToY(1);
             st.setToX(1);
             st.play();

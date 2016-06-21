@@ -173,7 +173,7 @@ public class Controller {
             if (!iSet.contains(i)) {
                 iSet.add(i);
                 count++;
-                Tile tile = new Tile(i, Math.random() > 0.9 ? 4 : 2);
+                Tile tile = new Tile(i, 2);
                 tile.setOpacity(0);
                 group.getChildren().add(tile);
                 tile.setLayoutCordinate();
@@ -185,12 +185,12 @@ public class Controller {
                 st.setFromX(0);
                 st.setToX(1);
                 st.setToY(1);
-                st.setDelay(Duration.millis(250));
+                st.setDelay(Duration.millis(150));
 
                 FadeTransition ft = new FadeTransition(Duration.millis(100),tile);
                 ft.setFromValue(0);
                 ft.setToValue(1);
-                ft.setDelay(Duration.millis(250));
+                ft.setDelay(Duration.millis(150));
 
                 st.play();
                 ft.play();
@@ -239,7 +239,7 @@ class Logic_move {
 
     static void move_to_bound (KeyCode kc, Tile tile) {
         Logic_move.reset_cord(tile);
-        TranslateTransition tt = new TranslateTransition(Duration.millis(200), tile);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(100), tile);
         tt.setNode(tile);
         double delta;
 
@@ -288,7 +288,7 @@ class Logic_move {
         reset_cord(t_m);
         reset_cord(t_dc);
 
-        TranslateTransition tt = new TranslateTransition(Duration.millis(200), t_m);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(100), t_m);
         double delta;
         boolean check_merge_condition;
 
