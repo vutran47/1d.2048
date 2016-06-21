@@ -3,11 +3,14 @@ package sample;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -22,6 +25,7 @@ import java.util.Random;
 import static sample.Controller.*;
 
 public class Main extends Application{
+    static Scene scene;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -60,7 +64,7 @@ public class Main extends Application{
         }
 
         // Attach all to the parent layout
-        Scene scene = new Scene(new BorderPane(group), 350, 350);
+        scene = new Scene(new BorderPane(group), 350, 350);
         primaryStage.setScene(scene);
         primaryStage.setTitle("2048 Bach Mai version");
         primaryStage.setResizable(false);
@@ -73,6 +77,8 @@ public class Main extends Application{
 
     void gameover_annouce (boolean gameIsOver) {
         if (gameIsOver) {
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, KeyEvent::consume);
+
             Label descrip = new Label("GAME OVER\nAnh Hiếu, anh NGU lắm!\nLàm game mà ko có Animation thì \nvứt cho dog ăn!\nNGU");
             descrip.setTextAlignment(TextAlignment.CENTER);
 
@@ -105,6 +111,8 @@ public class Main extends Application{
             st.setToX(1);
             st.play();
 
+
+
             newgame.setOnAction(event -> {
                 FadeTransition ft2 = new FadeTransition(Duration.millis(500),vbox);
                 ft2.setToValue(0);
@@ -112,6 +120,8 @@ public class Main extends Application{
                 ft2.setOnFinished(event1 -> {
                     group.getChildren().remove(vbox);
                     Controller.clear_all();
+                    scene.removeEventFilter(KeyEvent.KEY_PRESSED, KeyEvent::consume);
+                    scene.setOnKeyPressed(Controller::move_tile);
                 });
             });
         }

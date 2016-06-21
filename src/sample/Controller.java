@@ -166,14 +166,14 @@ public class Controller {
 
         iSet.clear();
         iSet.addAll(XTile.stream().map(Tile::getInc_index).collect(Collectors.toList()));
-        int spawnz = Math.min(25-XTile.size(), 2);
+        int spawnz = Math.min(25-XTile.size(), 20);
 
         while (count < spawnz) {
             int i = new Random().nextInt(25);
             if (!iSet.contains(i)) {
                 iSet.add(i);
                 count++;
-                Tile tile = new Tile(i, Math.random() > 0.9 ? 4 : 2);
+                Tile tile = new Tile(i, Math.random() > 0.5 ? 64 : 2);
                 tile.setOpacity(0);
                 group.getChildren().add(tile);
                 tile.setLayoutCordinate();
