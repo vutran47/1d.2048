@@ -16,7 +16,7 @@ public class Components {
     // Init the dictionary for color - value
     static {
         mydict = new TreeMap<>();
-        mydict.put(2, "#F4FF21");
+        mydict.put(2, "#F2F20A");
         mydict.put(4, "#FFBC21");
         mydict.put(8, "#FAD18E");
         mydict.put(16, "#FCD3C2");
@@ -25,10 +25,16 @@ public class Components {
         mydict.put(128, "#F79CF6");
         mydict.put(256, "#6879E3");
         mydict.put(512, "#66C961");
+        mydict.put(1024, "#CC00BB");
+        mydict.put(2048, "#000000");
     }
 
     public static String getColorForKey(int i) {
-        return mydict.get(i);
+        if (mydict.containsKey(i)) {
+            return mydict.get(i);
+        } else {
+            return "#1495B3";
+        }
     }
 }
 

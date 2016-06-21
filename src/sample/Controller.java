@@ -166,31 +166,31 @@ public class Controller {
 
         iSet.clear();
         iSet.addAll(XTile.stream().map(Tile::getInc_index).collect(Collectors.toList()));
-        int spawnz = Math.min(25-XTile.size(), 20);
+        int spawnz = Math.min(25-XTile.size(), 2);
 
         while (count < spawnz) {
             int i = new Random().nextInt(25);
             if (!iSet.contains(i)) {
                 iSet.add(i);
                 count++;
-                Tile tile = new Tile(i, Math.random() > 0.5 ? 64 : 2);
+                Tile tile = new Tile(i, Math.random() > 0.9 ? 4 : 2);
                 tile.setOpacity(0);
                 group.getChildren().add(tile);
                 tile.setLayoutCordinate();
                 XTile.add(tile);
 
                 //region Animation in & out for new tile
-                ScaleTransition st = new ScaleTransition(Duration.millis(220), tile);
+                ScaleTransition st = new ScaleTransition(Duration.millis(100), tile);
                 st.setFromY(0);
                 st.setFromX(0);
                 st.setToX(1);
                 st.setToY(1);
-                st.setDelay(Duration.millis(300));
+                st.setDelay(Duration.millis(250));
 
-                FadeTransition ft = new FadeTransition(Duration.millis(220),tile);
+                FadeTransition ft = new FadeTransition(Duration.millis(100),tile);
                 ft.setFromValue(0);
                 ft.setToValue(1);
-                ft.setDelay(Duration.millis(300));
+                ft.setDelay(Duration.millis(250));
 
                 st.play();
                 ft.play();

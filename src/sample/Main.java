@@ -26,6 +26,7 @@ import static sample.Controller.*;
 
 public class Main extends Application{
     static Scene scene;
+    EventHandler<KeyEvent> mover = event -> Controller.move_tile(event);
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -71,14 +72,15 @@ public class Main extends Application{
         primaryStage.show();
 
         // EVENT HANDLING
-        scene.setOnKeyPressed(Controller::move_tile);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, this.mover);
 
     }
 
     void gameover_annouce (boolean gameIsOver) {
         if (gameIsOver) {
-            scene.addEventFilter(KeyEvent.KEY_PRESSED, KeyEvent::consume);
+            scene.removeEventHandler(KeyEvent.KEY_PRESSED, mover);
 
+            // Prepare the Vbox contain Message and New game button
             Label descrip = new Label("GAME OVER\nAnh Hiếu, anh NGU lắm!\nLàm game mà ko có Animation thì \nvứt cho dog ăn!\nNGU");
             descrip.setTextAlignment(TextAlignment.CENTER);
 
@@ -97,6 +99,7 @@ public class Main extends Application{
             group.getChildren().add(vbox);
             vbox.setPrefSize(270,270);
 
+            // Animation for the Vbox to show
             FadeTransition ft = new FadeTransition(Duration.millis(200),vbox);
             ft.setDelay(Duration.millis(1000));
             ft.setFromValue(0);
@@ -111,8 +114,7 @@ public class Main extends Application{
             st.setToX(1);
             st.play();
 
-
-
+            // Assign Action for the Try Again button
             newgame.setOnAction(event -> {
                 FadeTransition ft2 = new FadeTransition(Duration.millis(500),vbox);
                 ft2.setToValue(0);
@@ -120,12 +122,12 @@ public class Main extends Application{
                 ft2.setOnFinished(event1 -> {
                     group.getChildren().remove(vbox);
                     Controller.clear_all();
-                    scene.removeEventFilter(KeyEvent.KEY_PRESSED, KeyEvent::consume);
-                    scene.setOnKeyPressed(Controller::move_tile);
+                    scene.addEventHandler(KeyEvent.KEY_PRESSED, this.mover);
                 });
             });
         }
     }
+
 
 
     public static void main(String[] args) {
