@@ -14,26 +14,31 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static sample.Main.glb;
+import static sample.Main.slb;
+
 public class Controller {
     // Static attributes and collections
     static HashSet<Integer> iSet = new HashSet<>();
     static ArrayList<Tile> XTile = new ArrayList<>();
     static Group group;
-    private static boolean animationPlaying = false;
+    static boolean animationPlaying = false;
+    static boolean _moved;
     static Main _main;
 
-    
+
     static void move_tile (KeyEvent ke) {
         if (animationPlaying) return;
         KeyCode kc = ke.getCode();
         animationPlaying = true;
+        _moved = false;
         for (Tile tile : XTile) {
             tile.setMergable(true);
         }
         switch (kc) {
             //region Prepare Data per Swipe direction
             case UP:
-                for (int i = 0; i < 5; i++) { // Browse columns
+                for (int i = 0; i < glb; i++) { // Browse columns
                     int finalI = i;
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getI_() == finalI)
                             .sorted(((o1, o2) -> o1.getJ_() - o2.getJ_()))
@@ -55,7 +60,7 @@ public class Controller {
                 break;
             
             case DOWN:
-                for (int i = 0; i < 5; i++) { // Browse columns
+                for (int i = 0; i < glb; i++) { // Browse columns
                     int finalI = i;
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getI_() == finalI)
                             .sorted(((o1, o2) -> o2.getJ_() - o1.getJ_()))
@@ -77,7 +82,7 @@ public class Controller {
                 break;
             
             case RIGHT:
-                for (int j = 0; j < 5; j++) { // Browse rows
+                for (int j = 0; j < glb; j++) { // Browse rows
                     int finalJ = j;
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getJ_() == finalJ)
                             .sorted(((o1, o2) -> o2.getI_() - o1.getI_()))
@@ -99,7 +104,7 @@ public class Controller {
                 break;
             
             case LEFT:
-                for (int j = 0; j < 5; j++) { // Browse columns
+                for (int j = 0; j < glb; j++) { // Browse columns
                     int finalJ = j;
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getJ_() == finalJ)
                             .sorted(((o1, o2) -> o1.getI_() - o2.getI_()))
@@ -137,8 +142,13 @@ public class Controller {
                 spawning();
             //endregion
         }
-        spawning();
-        _main.gameover_annouce(Controller.isOver());
+
+        // Check game_over and spawning condition
+        if (_moved) {
+            spawning();
+        } else {
+            _main.gameover_annouce(Controller.isOver());
+        }
     }
 
     static void clear_all () {
@@ -147,7 +157,7 @@ public class Controller {
         iSet.clear();
 
         while (iSet.size() < 3) {
-            int i = new Random().nextInt(25);
+            int i = new Random().nextInt(glb*glb);
             if (iSet.add(i)) {
                 Tile tile = new Tile(i ,new Random().nextDouble() > 0.9 ? 4 : 2);
                 group.getChildren().add(tile);
@@ -159,17 +169,16 @@ public class Controller {
 
     private static void spawning () {
         int count = 0;
-
-        if (XTile.size() == 25) {
+        if (XTile.size() == glb*glb) {
             animationPlaying = false;
         }
 
         iSet.clear();
         iSet.addAll(XTile.stream().map(Tile::getInc_index).collect(Collectors.toList()));
-        int spawnz = Math.min(25-XTile.size(), 2);
+        int spawnz = Math.min(glb*glb-XTile.size(), slb);
 
         while (count < spawnz) {
-            int i = new Random().nextInt(25);
+            int i = new Random().nextInt(glb*glb);
             if (!iSet.contains(i)) {
                 iSet.add(i);
                 count++;
@@ -203,7 +212,7 @@ public class Controller {
 
     private static boolean isOver () {
         // Challenge: checking game over condition
-        if (XTile.size() < 25) {
+        if (XTile.size() < glb*glb) {
             return false;
         } else {
             boolean check_v = false;
@@ -213,10 +222,10 @@ public class Controller {
                     .collect(Collectors.toCollection(ArrayList::new));
 
             int i = 0;
-            while (i < 5 & !check_h & !check_v) {
-                for (int j = 0; j < 4; j++) {
-                    check_v = xtc.get(j+i*5).getValue() == xtc.get(i*5+j+1).getValue();
-                    check_h = xtc.get(i+j*5).getValue() == xtc.get(i+(j+1)*5).getValue();
+            while (i < glb & !check_h & !check_v) {
+                for (int j = 0; j < (glb-1); j++) {
+                    check_v = xtc.get(j+i*glb).getValue() == xtc.get(i*glb+j+1).getValue();
+                    check_h = xtc.get(i+j*glb).getValue() == xtc.get(i+(j+1)*glb).getValue();
                     if (check_h|check_v) break;
                 }
                 i++;
@@ -239,11 +248,12 @@ class Logic_move {
 
     static void move_to_bound (KeyCode kc, Tile tile) {
         Logic_move.reset_cord(tile);
-        TranslateTransition tt = new TranslateTransition(Duration.millis(100), tile);
-        tt.setNode(tile);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(200), tile);
         double delta;
 
         if (tile.getTranslateY() != 0 | tile.getTranslateY() != 0) return;
+
+        //region Direction handler
         switch (kc) {
             case UP:
                 if (tile.getJ_() != 0) {
@@ -251,24 +261,27 @@ class Logic_move {
                     tt.setToY(delta);
                     tile.setJ_(0);
                     tt.play();
+                    Controller._moved = true;
                 }
                 break;
 
             case DOWN:
-                if (tile.getJ_() != 4) {
-                    delta = (4-tile.getJ_())*53;
+                if (tile.getJ_() != (glb-1)) {
+                    delta = ((glb-1)-tile.getJ_())*53;
                     tt.setToY(delta);
-                    tile.setJ_(4);
+                    tile.setJ_((glb-1));
                     tt.play();
+                    Controller._moved = true;
                 }
                 break;
 
             case RIGHT:
-                if (tile.getI_() != 4) {
-                    delta = (4-tile.getI_())*53;
+                if (tile.getI_() != (glb-1)) {
+                    delta = ((glb-1)-tile.getI_())*53;
                     tt.setToX(delta);
-                    tile.setI_(4);
+                    tile.setI_((glb-1));
                     tt.play();
+                    Controller._moved = true;
                 }
                 break;
 
@@ -278,9 +291,11 @@ class Logic_move {
                     tt.setToX(delta);
                     tile.setI_(0);
                     tt.play();
+                    Controller._moved = true;
                 }
                 break;
         }
+        //endregion
 
     }
 
@@ -288,71 +303,52 @@ class Logic_move {
         reset_cord(t_m);
         reset_cord(t_dc);
 
-        TranslateTransition tt = new TranslateTransition(Duration.millis(100), t_m);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(200), t_m);
         double delta;
-        boolean check_merge_condition;
+        boolean check_merge_condition = (t_m.getValue() == t_dc.getValue() && t_dc.isMergable());
 
+        //region Direction handler
         switch (kc) {
             case UP:
-                // check if mergeable
-                check_merge_condition = (t_m.getValue() == t_dc.getValue() && t_dc.isMergable());
                 delta = check_merge_condition? (t_dc.getJ_()-t_m.getJ_())*53 : (t_dc.getJ_()-t_m.getJ_() + 1)*53;
                 tt.setToY(delta);
-                if (check_merge_condition) {
-                    t_m.setValue(t_m.getValue()*2);
-                    t_m.setMergable(false);
-                    Controller.XTile.remove(t_dc);
-                    tt.setOnFinished(event -> Controller.group.getChildren().remove(t_dc));
-                }
                 t_m.setJ_(check_merge_condition? t_dc.getJ_() : t_dc.getJ_() + 1);
                 tt.play();
                 break;
 
             case DOWN:
-                check_merge_condition = (t_m.getValue() == t_dc.getValue() && t_dc.isMergable());
                 delta = check_merge_condition? (t_dc.getJ_()-t_m.getJ_())*53 : (t_dc.getJ_()-t_m.getJ_() - 1)*53;
                 tt.setToY(delta);
-                if (check_merge_condition) {
-                    t_m.setValue(t_m.getValue()*2);
-                    t_m.setMergable(false);
-                    Controller.XTile.remove(t_dc);
-                    tt.setOnFinished(event -> Controller.group.getChildren().remove(t_dc));
-                }
                 t_m.setJ_(check_merge_condition? t_dc.getJ_() : t_dc.getJ_() - 1);
                 tt.play();
                 break;
 
             case RIGHT:
-                check_merge_condition = (t_m.getValue() == t_dc.getValue() && t_dc.isMergable());
                 delta = check_merge_condition? (t_dc.getI_()-t_m.getI_())*53 : (t_dc.getI_()-t_m.getI_() - 1)*53;
                 tt.setToX(delta);
-                if (check_merge_condition) {
-                    t_m.setValue(t_m.getValue()*2);
-                    t_m.setMergable(false);
-                    Controller.XTile.remove(t_dc);
-                    tt.setOnFinished(event -> Controller.group.getChildren().remove(t_dc));
-                }
                 t_m.setI_(check_merge_condition? t_dc.getI_() : t_dc.getI_() - 1);
                 tt.play();
-
                 break;
 
             case LEFT:
-                check_merge_condition = (t_m.getValue() == t_dc.getValue() && t_dc.isMergable());
                 delta = check_merge_condition? (t_dc.getI_()-t_m.getI_())*53 : (t_dc.getI_()-t_m.getI_() + 1)*53;
                 tt.setToX(delta);
-                if (check_merge_condition) {
-                    t_m.setValue(t_m.getValue()*2);
-                    t_m.setMergable(false);
-                    Controller.XTile.remove(t_dc);
-                    tt.setOnFinished(event -> Controller.group.getChildren().remove(t_dc));
-                }
                 t_m.setI_(check_merge_condition? t_dc.getI_() : t_dc.getI_() + 1);
                 tt.play();
                 break;
         }
+        //endregion
+
+        if (check_merge_condition) {
+            Controller._moved = true;
+            t_m.setValue(t_m.getValue()*2);
+            t_m.setMergable(false);
+            Controller.XTile.remove(t_dc);
+            tt.setOnFinished(event -> {
+                Controller.group.getChildren().remove(t_dc);
+                t_m.setText();
+            });
+        }
     }
-
-
 
 }

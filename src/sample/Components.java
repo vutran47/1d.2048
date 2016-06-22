@@ -10,7 +10,9 @@ import javafx.scene.text.Font;
 
 import java.util.TreeMap;
 
-public class Components {
+import static sample.Main.glb;
+
+class Components {
     private static TreeMap<Integer, String> mydict;
 
     // Init the dictionary for color - value
@@ -29,7 +31,7 @@ public class Components {
         mydict.put(2048, "#000000");
     }
 
-    public static String getColorForKey(int i) {
+    static String getColorForKey(int i) {
         if (mydict.containsKey(i)) {
             return mydict.get(i);
         } else {
@@ -40,6 +42,7 @@ public class Components {
 
 
 class Tile extends Label {
+
     //region Necessary Instance properties and their Getters & Setters
     private int value;
     private int i_;
@@ -47,59 +50,63 @@ class Tile extends Label {
 
     private boolean mergable;
 
-    public boolean isMergable() {
+    boolean isMergable() {
         return mergable;
     }
 
-    public void setMergable(boolean mergable) {
+    void setMergable(boolean mergable) {
         this.mergable = mergable;
     }
 
-    public void setValue(int i) {
+    void setValue(int i) {
         value = i;
-        setText(String.valueOf(i));
-        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
+        //setText(String.valueOf(i));
     }
 
-    public int getValue() {
+    int getValue() {
         return value;
     }
 
-    public int getI_() {
+    int getI_() {
         return i_;
     }
 
-    public void setI_(int i_) {
+    void setI_(int i_) {
         this.i_ = i_;
     }
 
-    public int getJ_() {
+    int getJ_() {
         return j_;
     }
 
-    public void setJ_(int j_) {
+    void setJ_(int j_) {
         this.j_ = j_;
     }
     //endregion
 
     // Special attributes for Tile: incremental index:
-    public int getInc_index() {
-        return getI_()*5+getJ_();
+    int getInc_index() {
+        return getI_()*glb+getJ_();
     }
 
-    public void setInc_index(int inc_index) {
-        setI_(Math.floorDiv(inc_index, 5));
-        setJ_(inc_index - 5*getI_());
+    private void setInc_index(int inc_index) {
+        setI_(Math.floorDiv(inc_index, glb));
+        setJ_(inc_index - glb*getI_());
     }
 
     // Layout method for Tile depending on its Row and Column
-    public void setLayoutCordinate() {
+    void setLayoutCordinate() {
         setLayoutX(53*getI_()+4);
         setLayoutY(53*getJ_()+4);
     }
 
+    void setText() {
+        super.setText(String.valueOf(getValue()));
+        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(getValue())), new CornerRadii(2), null)));
+    }
+
     // CONSTRUCTOR
-    public Tile(int incremental_index, int value) {
+    Tile(int incremental_index, int value) {
         super();
         setPrefSize(50,50);
         setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
@@ -108,6 +115,7 @@ class Tile extends Label {
         setAlignment(Pos.CENTER);
         setInc_index(incremental_index);
         setValue(value);
+        setText(String.valueOf(value));
         setMergable(true);
     }
 }

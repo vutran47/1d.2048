@@ -4,7 +4,6 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -25,23 +24,25 @@ import java.util.Random;
 import static sample.Controller.*;
 
 public class Main extends Application{
-    static Scene scene;
-    EventHandler<KeyEvent> mover = event -> Controller.move_tile(event);
+    private static Scene scene;
+    private EventHandler<KeyEvent> mover = Controller::move_tile;
+    static int glb = 3;
+    static int slb = 1;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Controller._main = this;
         group = new Group();
-        group.prefHeight(270);
-        group.prefWidth(270);
+        group.prefHeight(53*glb+5);
+        group.prefWidth(53*glb+5);
 
         // Prepare a dark background
-        Rectangle background = new Rectangle(270,270,Color.DARKGREY);
+        Rectangle background = new Rectangle(53*glb+5,53*glb+5,Color.DARKGREY);
         group.getChildren().add(background);
 
         // Prepare tile placeholders
-        for (int i = 0; i < 5 ; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < glb ; i++) {
+            for (int j = 0; j < glb; j++) {
                 Rectangle rect = new Rectangle(50,50, Paint.valueOf("#F0F0F0"));
                 group.getChildren().add(rect);
                 rect.setX(53*i+4);
@@ -55,7 +56,7 @@ public class Main extends Application{
         // make column and row index become properties of the instance
         // so I can get them out and sort them whenever required
         while (iSet.size() < 3) {
-            int i = new Random().nextInt(25);
+            int i = new Random().nextInt(glb*glb);
             if (iSet.add(i)) {
                 Tile tile = new Tile(i ,new Random().nextDouble() > 0.9 ? 4 : 2);
                 group.getChildren().add(tile);
@@ -65,7 +66,7 @@ public class Main extends Application{
         }
 
         // Attach all to the parent layout
-        scene = new Scene(new BorderPane(group), 350, 350);
+        scene = new Scene(new BorderPane(group), 53*glb+70, 53*glb+70);
         primaryStage.setScene(scene);
         primaryStage.setTitle("2048 Bach Mai version");
         primaryStage.setResizable(false);
@@ -73,11 +74,11 @@ public class Main extends Application{
 
         // EVENT HANDLING
         scene.addEventHandler(KeyEvent.KEY_PRESSED, this.mover);
-
     }
 
     void gameover_annouce (boolean gameIsOver) {
         if (gameIsOver) {
+            //region Game over handling
             scene.removeEventHandler(KeyEvent.KEY_PRESSED, mover);
 
             // Prepare the Vbox contain Message and New game button
@@ -97,7 +98,7 @@ public class Main extends Application{
             vbox.setOpacity(0);
             vbox.setAlignment(Pos.CENTER);
             group.getChildren().add(vbox);
-            vbox.setPrefSize(270,270);
+            vbox.setPrefSize(53*glb+5,53*glb+5);
 
             // Animation for the Vbox to show
             FadeTransition ft = new FadeTransition(Duration.millis(100),vbox);
@@ -122,9 +123,12 @@ public class Main extends Application{
                 ft2.setOnFinished(event1 -> {
                     group.getChildren().remove(vbox);
                     Controller.clear_all();
-                    scene.addEventHandler(KeyEvent.KEY_PRESSED, this.mover);
+                    scene.addEventHandler(KeyEvent.KEY_PRESSED, mover);
                 });
             });
+            //endregion
+        } else {
+            Controller.animationPlaying = false;
         }
     }
 
