@@ -24,9 +24,9 @@ import java.util.Random;
 import static sample.Controller.*;
 
 public class Main extends Application{
-    private static Scene scene;
-    private EventHandler<KeyEvent> mover = Controller::move_tile;
-    static int glb = 3;
+    static Scene scene;
+    EventHandler<KeyEvent> mover = Controller::move_tile;
+    static int glb = 2;
     static int slb = 1;
 
     @Override
@@ -124,12 +124,13 @@ public class Main extends Application{
                     group.getChildren().remove(vbox);
                     Controller.clear_all();
                     scene.addEventHandler(KeyEvent.KEY_PRESSED, mover);
+
                 });
             });
             //endregion
         } else {
-            Controller.animationPlaying = false;
         }
+
     }
 
 

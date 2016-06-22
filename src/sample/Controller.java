@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap;
 import com.sun.istack.internal.NotNull;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
@@ -15,6 +16,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static sample.Main.glb;
+import static sample.Main.scene;
 import static sample.Main.slb;
 
 public class Controller {
@@ -22,15 +24,13 @@ public class Controller {
     static HashSet<Integer> iSet = new HashSet<>();
     static ArrayList<Tile> XTile = new ArrayList<>();
     static Group group;
-    static boolean animationPlaying = false;
     static boolean _moved;
     static Main _main;
 
 
     static void move_tile (KeyEvent ke) {
-        if (animationPlaying) return;
         KeyCode kc = ke.getCode();
-        animationPlaying = true;
+        scene.removeEventHandler(KeyEvent.KEY_PRESSED, _main.mover);
         _moved = false;
         for (Tile tile : XTile) {
             tile.setMergable(true);
@@ -148,6 +148,7 @@ public class Controller {
             spawning();
         } else {
             _main.gameover_annouce(Controller.isOver());
+            scene.addEventHandler(KeyEvent.KEY_PRESSED,_main.mover);
         }
     }
 
@@ -169,9 +170,6 @@ public class Controller {
 
     private static void spawning () {
         int count = 0;
-        if (XTile.size() == glb*glb) {
-            animationPlaying = false;
-        }
 
         iSet.clear();
         iSet.addAll(XTile.stream().map(Tile::getInc_index).collect(Collectors.toList()));
@@ -204,7 +202,7 @@ public class Controller {
                 st.play();
                 ft.play();
 
-                ft.setOnFinished(event -> animationPlaying = false);
+                ft.setOnFinished(event -> scene.addEventHandler(KeyEvent.KEY_PRESSED, _main.mover));
                 //endregion
             }
         }
@@ -248,7 +246,7 @@ class Logic_move {
 
     static void move_to_bound (KeyCode kc, Tile tile) {
         Logic_move.reset_cord(tile);
-        TranslateTransition tt = new TranslateTransition(Duration.millis(200), tile);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(150), tile);
         double delta;
 
         if (tile.getTranslateY() != 0 | tile.getTranslateY() != 0) return;
@@ -303,7 +301,7 @@ class Logic_move {
         reset_cord(t_m);
         reset_cord(t_dc);
 
-        TranslateTransition tt = new TranslateTransition(Duration.millis(200), t_m);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(150), t_m);
         double delta;
         boolean check_merge_condition = (t_m.getValue() == t_dc.getValue() && t_dc.isMergable());
 
