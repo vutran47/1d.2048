@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.corba.se.impl.oa.poa.ActiveObjectMap;
 import com.sun.istack.internal.NotNull;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
@@ -16,7 +15,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static sample.Main.glb;
-import static sample.Main.scene;
 import static sample.Main.slb;
 
 public class Controller {
@@ -27,10 +25,12 @@ public class Controller {
     static boolean _moved;
     static Main _main;
 
+    private static boolean anim_bar = false;
 
     static void move_tile (KeyEvent ke) {
+        System.out.println("exec here");
+        if (anim_bar) return;
         KeyCode kc = ke.getCode();
-        scene.removeEventHandler(KeyEvent.KEY_PRESSED, _main.mover);
         _moved = false;
         for (Tile tile : XTile) {
             tile.setMergable(true);
@@ -43,20 +43,12 @@ public class Controller {
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getI_() == finalI)
                             .sorted(((o1, o2) -> o1.getJ_() - o2.getJ_()))
                             .collect(Collectors.toCollection(ArrayList<Tile>::new));
-
-                    // if empty column
                     if (focus.size() == 0) continue;
-
-                    // if not empty, move first tile to boundary
                     Logic_move.move_to_bound(kc, focus.get(0));
-
-                    // then take care of the rest in the column by row
                     for (int j = 1; j < focus.size(); j++) {
-                        // move them by pairs
                         Logic_move.move_to_nearest(kc, focus.get(j), focus.get(j-1));
                     }
                 }
-
                 break;
             
             case DOWN:
@@ -65,20 +57,12 @@ public class Controller {
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getI_() == finalI)
                             .sorted(((o1, o2) -> o2.getJ_() - o1.getJ_()))
                             .collect(Collectors.toCollection(ArrayList<Tile>::new));
-
-                    // if empty column
                     if (focus.size() == 0) continue;
-
-                    // if not empty, move first tile to boundary
                     Logic_move.move_to_bound(kc, focus.get(0));
-
-                    // then take care of the rest in the column by row
                     for (int j = 1; j < focus.size(); j++) {
-                        // move them by pairs
                         Logic_move.move_to_nearest(kc, focus.get(j), focus.get(j-1));
                     }
                 }
-
                 break;
             
             case RIGHT:
@@ -87,20 +71,12 @@ public class Controller {
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getJ_() == finalJ)
                             .sorted(((o1, o2) -> o2.getI_() - o1.getI_()))
                             .collect(Collectors.toCollection(ArrayList<Tile>::new));
-
-                    // if empty column
                     if (focus.size() == 0) continue;
-
-                    // if not empty, move first tile to boundary
                     Logic_move.move_to_bound(kc, focus.get(0));
-
-                    // then take care of the rest in the column by row
                     for (int i = 1; i < focus.size(); i++) {
-                        // move them by pairs
                         Logic_move.move_to_nearest(kc, focus.get(i), focus.get(i-1));
                     }
                 }
-
                 break;
             
             case LEFT:
@@ -109,20 +85,12 @@ public class Controller {
                     ArrayList<Tile> focus = XTile.stream().filter(tile -> tile.getJ_() == finalJ)
                             .sorted(((o1, o2) -> o1.getI_() - o2.getI_()))
                             .collect(Collectors.toCollection(ArrayList<Tile>::new));
-
-                    // if empty column
                     if (focus.size() == 0) continue;
-
-                    // if not empty, move first tile to boundary
                     Logic_move.move_to_bound(kc, focus.get(0));
-
-                    // then take care of the rest in the column by row
                     for (int i = 1; i < focus.size(); i++) {
-                        // move them by pairs
                         Logic_move.move_to_nearest(kc, focus.get(i), focus.get(i-1));
                     }
                 }
-
                 break;
             //endregion
 
@@ -148,7 +116,6 @@ public class Controller {
             spawning();
         } else {
             _main.gameover_annouce(Controller.isOver());
-            scene.addEventHandler(KeyEvent.KEY_PRESSED,_main.mover);
         }
     }
 
@@ -169,6 +136,7 @@ public class Controller {
     }
 
     private static void spawning () {
+        anim_bar = true;
         int count = 0;
 
         iSet.clear();
@@ -194,22 +162,23 @@ public class Controller {
                 st.setToY(1);
                 st.setDelay(Duration.millis(150));
 
-                FadeTransition ft = new FadeTransition(Duration.millis(100),tile);
+                FadeTransition ft = new FadeTransition(Duration.millis(120), tile);
                 ft.setFromValue(0);
                 ft.setToValue(1);
-                ft.setDelay(Duration.millis(150));
+                ft.setDelay(Duration.millis(170));
 
                 st.play();
                 ft.play();
 
-                ft.setOnFinished(event -> scene.addEventHandler(KeyEvent.KEY_PRESSED, _main.mover));
+                st.setOnFinished(event -> anim_bar = false);
+            }
                 //endregion
             }
-        }
+
     }
 
+
     private static boolean isOver () {
-        // Challenge: checking game over condition
         if (XTile.size() < glb*glb) {
             return false;
         } else {
@@ -228,7 +197,6 @@ public class Controller {
                 }
                 i++;
             }
-
             return !check_h && !check_v;
         }
     }

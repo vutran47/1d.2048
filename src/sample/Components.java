@@ -50,6 +50,20 @@ class Tile extends Label {
 
     private boolean mergable;
 
+    // CONSTRUCTOR
+    Tile(int incremental_index, int value) {
+        super();
+        setPrefSize(50, 50);
+        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
+        setFont(Font.font("Impact", 24));
+        setTextFill(Paint.valueOf("#F0F7ED"));
+        setAlignment(Pos.CENTER);
+        setInc_index(incremental_index);
+        setValue(value);
+        setText(String.valueOf(value));
+        setMergable(true);
+    }
+
     boolean isMergable() {
         return mergable;
     }
@@ -58,13 +72,12 @@ class Tile extends Label {
         this.mergable = mergable;
     }
 
-    void setValue(int i) {
-        value = i;
-        //setText(String.valueOf(i));
-    }
-
     int getValue() {
         return value;
+    }
+
+    void setValue(int i) {
+        value = i;
     }
 
     int getI_() {
@@ -78,11 +91,11 @@ class Tile extends Label {
     int getJ_() {
         return j_;
     }
+    //endregion
 
     void setJ_(int j_) {
         this.j_ = j_;
     }
-    //endregion
 
     // Special attributes for Tile: incremental index:
     int getInc_index() {
@@ -103,19 +116,5 @@ class Tile extends Label {
     void setText() {
         super.setText(String.valueOf(getValue()));
         setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(getValue())), new CornerRadii(2), null)));
-    }
-
-    // CONSTRUCTOR
-    Tile(int incremental_index, int value) {
-        super();
-        setPrefSize(50,50);
-        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
-        setFont(Font.font("Impact", 24));
-        setTextFill(Paint.valueOf("#F0F7ED"));
-        setAlignment(Pos.CENTER);
-        setInc_index(incremental_index);
-        setValue(value);
-        setText(String.valueOf(value));
-        setMergable(true);
     }
 }

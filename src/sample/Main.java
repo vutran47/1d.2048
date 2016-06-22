@@ -3,7 +3,6 @@ package sample;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -24,14 +23,19 @@ import java.util.Random;
 import static sample.Controller.*;
 
 public class Main extends Application{
-    static Scene scene;
-    EventHandler<KeyEvent> mover = Controller::move_tile;
-    static int glb = 2;
-    static int slb = 1;
+    static int glb = 3;
+    static int slb = 2;
+    private Scene scene;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Controller._main = this;
+
+        //region Preparing Basic Interface
         group = new Group();
         group.prefHeight(53*glb+5);
         group.prefWidth(53*glb+5);
@@ -71,18 +75,23 @@ public class Main extends Application{
         primaryStage.setTitle("2048 Bach Mai version");
         primaryStage.setResizable(false);
         primaryStage.show();
+        //endregion
 
         // EVENT HANDLING
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, this.mover);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, Controller::move_tile);
+
+
+
+
     }
 
     void gameover_annouce (boolean gameIsOver) {
         if (gameIsOver) {
             //region Game over handling
-            scene.removeEventHandler(KeyEvent.KEY_PRESSED, mover);
+            scene.removeEventHandler(KeyEvent.ANY, Controller::move_tile);
 
             // Prepare the Vbox contain Message and New game button
-            Label descrip = new Label("GAME OVER\nAnh Hiếu, anh NGU lắm!\nLàm game mà ko có Animation thì \nvứt cho dog ăn!\nNGU");
+            Label descrip = new Label("GAME OVER\nAnh Hiếu, anh NGU lắm!\nLàm game mà ko có Animation\nthì vứt cho dog ăn!\nN G U !!");
             descrip.setTextAlignment(TextAlignment.CENTER);
 
             Button newgame = new Button("Try again!");
@@ -115,28 +124,20 @@ public class Main extends Application{
             st.setToX(1);
             st.play();
 
+
             // Assign Action for the Try Again button
             newgame.setOnAction(event -> {
-                FadeTransition ft2 = new FadeTransition(Duration.millis(500),vbox);
+                FadeTransition ft2 = new FadeTransition(Duration.millis(500), vbox);
                 ft2.setToValue(0);
-                ft2.play();
                 ft2.setOnFinished(event1 -> {
                     group.getChildren().remove(vbox);
                     Controller.clear_all();
-                    scene.addEventHandler(KeyEvent.KEY_PRESSED, mover);
-
+                    scene.addEventHandler(KeyEvent.KEY_PRESSED, Controller::move_tile);
+                    ft2.play();
                 });
             });
             //endregion
-        } else {
         }
-
-    }
-
-
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
 
