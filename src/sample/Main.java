@@ -3,11 +3,13 @@ package sample;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -23,9 +25,10 @@ import java.util.Random;
 import static sample.Controller.*;
 
 public class Main extends Application{
-    static int glb = 3;
-    static int slb = 2;
+    static int glb = 4;
+    static int slb = 1;
     private Scene scene;
+    boolean stopall;
 
     public static void main(String[] args) {
         launch(args);
@@ -41,13 +44,13 @@ public class Main extends Application{
         group.prefWidth(53*glb+5);
 
         // Prepare a dark background
-        Rectangle background = new Rectangle(53*glb+5,53*glb+5,Color.DARKGREY);
+        Rectangle background = new Rectangle(53*glb+5,53*glb+5,Paint.valueOf("#D9BF9C"));
         group.getChildren().add(background);
 
         // Prepare tile placeholders
         for (int i = 0; i < glb ; i++) {
             for (int j = 0; j < glb; j++) {
-                Rectangle rect = new Rectangle(50,50, Paint.valueOf("#F0F0F0"));
+                Rectangle rect = new Rectangle(50,50,Paint.valueOf("#F2E7D8"));
                 group.getChildren().add(rect);
                 rect.setX(53*i+4);
                 rect.setY(53*j+4);
@@ -80,15 +83,13 @@ public class Main extends Application{
         // EVENT HANDLING
         scene.addEventHandler(KeyEvent.KEY_PRESSED, Controller::move_tile);
 
-
-
-
     }
 
     void gameover_annouce (boolean gameIsOver) {
         if (gameIsOver) {
             //region Game over handling
-            scene.removeEventHandler(KeyEvent.ANY, Controller::move_tile);
+            // Cancel all d-key handler
+            stopall = true;
 
             // Prepare the Vbox contain Message and New game button
             Label descrip = new Label("GAME OVER\nAnh Hiếu, anh NGU lắm!\nLàm game mà ko có Animation\nthì vứt cho dog ăn!\nN G U !!");
@@ -124,6 +125,13 @@ public class Main extends Application{
             st.setToX(1);
             st.play();
 
+            // Set default keystroke ENTER for the Try again button
+            scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    newgame.fire();
+                }
+            });
+
 
             // Assign Action for the Try Again button
             newgame.setOnAction(event -> {
@@ -132,9 +140,10 @@ public class Main extends Application{
                 ft2.setOnFinished(event1 -> {
                     group.getChildren().remove(vbox);
                     Controller.clear_all();
-                    scene.addEventHandler(KeyEvent.KEY_PRESSED, Controller::move_tile);
-                    ft2.play();
+                    stopall = false;
                 });
+                ft2.play();
+
             });
             //endregion
         }

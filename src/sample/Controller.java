@@ -19,22 +19,34 @@ import static sample.Main.slb;
 
 public class Controller {
     // Static attributes and collections
-    static HashSet<Integer> iSet = new HashSet<>();
-    static ArrayList<Tile> XTile = new ArrayList<>();
-    static Group group;
-    static boolean _moved;
-    static Main _main;
+    static HashSet<Integer> iSet = new HashSet<>(); // this set will check index number (from 1 to glb) to make sure no duplicate tiles are created
+    static ArrayList<Tile> XTile = new ArrayList<>(); // this dynamic array shall hold reference to tiles being shown
+    static Group group; // Reference to Group of nodes in main
+    static boolean _moved; // Boolean value to detect any movement of tile within keystroke handling process
+    static Main _main; // Ref,. to Main.
+    private static boolean anim_bar = false; // Prevent keystroke handling while animation of previous process has not finished
 
-    private static boolean anim_bar = false;
 
+    // Method to analyse D-key pressed and execute proper actions
     static void move_tile (KeyEvent ke) {
-        System.out.println("exec here");
+        // If the game is already over, this method is canceled!
+        if (_main.stopall) return;
+
+        // If animation of tile is playing and not finished yet, this method is also canceled
         if (anim_bar) return;
-        KeyCode kc = ke.getCode();
+
+        // If conditions are satisfied, execute the below code to move tiles properly
+        // Reset the tile-movement detection
         _moved = false;
+        // Reset merge condition of tiles
         for (Tile tile : XTile) {
             tile.setMergable(true);
         }
+
+        // Get the key code
+        KeyCode kc = ke.getCode();
+
+        // Handle different directions
         switch (kc) {
             //region Prepare Data per Swipe direction
             case UP:
@@ -112,9 +124,12 @@ public class Controller {
         }
 
         // Check game_over and spawning condition
+        // if tile movement did take place, spawning is allowed
         if (_moved) {
             spawning();
         } else {
+            // If no tiles were moved while there are still empty tile-placeholders...
+            // then something did happen, check the game-over condition
             _main.gameover_annouce(Controller.isOver());
         }
     }
@@ -176,7 +191,6 @@ public class Controller {
             }
 
     }
-
 
     private static boolean isOver () {
         if (XTile.size() < glb*glb) {
@@ -270,7 +284,7 @@ class Logic_move {
         reset_cord(t_dc);
 
         TranslateTransition tt = new TranslateTransition(Duration.millis(150), t_m);
-        double delta;
+        double delta = 0;
         boolean check_merge_condition = (t_m.getValue() == t_dc.getValue() && t_dc.isMergable());
 
         //region Direction handler
@@ -304,9 +318,11 @@ class Logic_move {
                 break;
         }
         //endregion
+        if (delta != 0) {
+            Controller._moved = true;
+        }
 
         if (check_merge_condition) {
-            Controller._moved = true;
             t_m.setValue(t_m.getValue()*2);
             t_m.setMergable(false);
             Controller.XTile.remove(t_dc);

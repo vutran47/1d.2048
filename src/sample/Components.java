@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
@@ -18,11 +19,11 @@ class Components {
     // Init the dictionary for color - value
     static {
         mydict = new TreeMap<>();
-        mydict.put(2, "#F2F20A");
-        mydict.put(4, "#FFBC21");
-        mydict.put(8, "#FAD18E");
-        mydict.put(16, "#FCD3C2");
-        mydict.put(32, "#FA7A7A");
+        mydict.put(2, "#FFF8ED");
+        mydict.put(4, "#FFFF6E");
+        mydict.put(8, "#FFE7BA");
+        mydict.put(16, "#FFD77A");
+        mydict.put(32, "#F77E7E");
         mydict.put(64, "#FFB0C8");
         mydict.put(128, "#F79CF6");
         mydict.put(256, "#6879E3");
@@ -55,8 +56,12 @@ class Tile extends Label {
         super();
         setPrefSize(50, 50);
         setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
-        setFont(Font.font("Impact", 24));
-        setTextFill(Paint.valueOf("#F0F7ED"));
+        setFont(Font.font("Arial Black", 22));
+        if (value < 15) {
+            setTextFill(Color.DARKORANGE);
+        } else {
+            setTextFill(Color.WHITE);
+        }
         setAlignment(Pos.CENTER);
         setInc_index(incremental_index);
         setValue(value);
@@ -115,6 +120,11 @@ class Tile extends Label {
 
     void setText() {
         super.setText(String.valueOf(getValue()));
+        if (value < 15) {
+            setTextFill(Color.DARKORANGE);
+        } else {
+            setTextFill(Color.WHITE);
+        }
         setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(getValue())), new CornerRadii(2), null)));
     }
 }
