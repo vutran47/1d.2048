@@ -3,6 +3,7 @@ package sample;
 import com.sun.istack.internal.NotNull;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
@@ -170,14 +171,14 @@ public class Controller {
                 XTile.add(tile);
 
                 //region Animation in & out for new tile
-                ScaleTransition st = new ScaleTransition(Duration.millis(100), tile);
+                ScaleTransition st = new ScaleTransition(Duration.millis(150), tile);
                 st.setFromY(0);
                 st.setFromX(0);
                 st.setToX(1);
                 st.setToY(1);
                 st.setDelay(Duration.millis(150));
 
-                FadeTransition ft = new FadeTransition(Duration.millis(120), tile);
+                FadeTransition ft = new FadeTransition(Duration.millis(150), tile);
                 ft.setFromValue(0);
                 ft.setToValue(1);
                 ft.setDelay(Duration.millis(170));
@@ -328,7 +329,22 @@ class Logic_move {
             Controller.XTile.remove(t_dc);
             tt.setOnFinished(event -> {
                 Controller.group.getChildren().remove(t_dc);
-                t_m.setText();
+
+                ScaleTransition st = new ScaleTransition(Duration.millis(75));
+                st.setToY(1.1);
+                st.setToX(1.1);
+
+                st.setOnFinished(event1 -> t_m.setText());
+
+                ScaleTransition st2 = new ScaleTransition(Duration.millis(100));
+                st2.setToX(1);
+                st2.setToY(1);
+
+                SequentialTransition seq = new SequentialTransition(st, st2);
+                seq.setNode(t_m);
+                seq.play();
+
+                //t_m.setText();
             });
         }
     }

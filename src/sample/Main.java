@@ -3,7 +3,6 @@ package sample;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -25,10 +24,11 @@ import java.util.Random;
 import static sample.Controller.*;
 
 public class Main extends Application{
-    static int glb = 4;
-    static int slb = 1;
-    private Scene scene;
+    static int glb = 4; // row x column
+    static int slb = 1; // number of tile for each spawning
+    static int plb = 7; //paddling between title
     boolean stopall;
+    private Scene scene;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,11 +40,13 @@ public class Main extends Application{
 
         //region Preparing Basic Interface
         group = new Group();
-        group.prefHeight(53*glb+5);
-        group.prefWidth(53*glb+5);
+        group.prefHeight(53 * glb + plb * 2);
+        group.prefWidth(53 * glb + plb * 2);
 
         // Prepare a dark background
-        Rectangle background = new Rectangle(53*glb+5,53*glb+5,Paint.valueOf("#D9BF9C"));
+        Rectangle background = new Rectangle(53 * glb + plb * 1.5, 53 * glb + plb * 1.5, Paint.valueOf("#D9BF9C"));
+        background.setArcHeight(7);
+        background.setArcWidth(7);
         group.getChildren().add(background);
 
         // Prepare tile placeholders
@@ -52,10 +54,10 @@ public class Main extends Application{
             for (int j = 0; j < glb; j++) {
                 Rectangle rect = new Rectangle(50,50,Paint.valueOf("#F2E7D8"));
                 group.getChildren().add(rect);
-                rect.setX(53*i+4);
-                rect.setY(53*j+4);
-                rect.setArcWidth(4);
-                rect.setArcHeight(4);
+                rect.setX(53 * i + plb);
+                rect.setY(53 * j + plb);
+                rect.setArcWidth(6);
+                rect.setArcHeight(6);
             }
         }
 
@@ -96,7 +98,7 @@ public class Main extends Application{
             descrip.setTextAlignment(TextAlignment.CENTER);
 
             Button newgame = new Button("Try again!");
-            newgame.setPrefSize(100,20);
+            newgame.setPrefSize(150, 40);
             newgame.setTextFill(Color.WHITE);
             newgame.setFont(Font.font(14));
             newgame.setTextAlignment(TextAlignment.CENTER);
@@ -108,7 +110,7 @@ public class Main extends Application{
             vbox.setOpacity(0);
             vbox.setAlignment(Pos.CENTER);
             group.getChildren().add(vbox);
-            vbox.setPrefSize(53*glb+5,53*glb+5);
+            vbox.setPrefSize(53 * glb + 1.5 * plb, 53 * glb + 1.5 * plb);
 
             // Animation for the Vbox to show
             FadeTransition ft = new FadeTransition(Duration.millis(100),vbox);

@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 import java.util.TreeMap;
 
 import static sample.Main.glb;
+import static sample.Main.plb;
 
 class Components {
     private static TreeMap<Integer, String> mydict;
@@ -55,10 +56,10 @@ class Tile extends Label {
     Tile(int incremental_index, int value) {
         super();
         setPrefSize(50, 50);
-        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(2), null)));
-        setFont(Font.font("Arial Black", 22));
+        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(value)), new CornerRadii(3), null)));
+        setFont(Font.font("Arial", 20));
         if (value < 15) {
-            setTextFill(Color.DARKORANGE);
+            setTextFill(Color.BLACK);
         } else {
             setTextFill(Color.WHITE);
         }
@@ -114,17 +115,17 @@ class Tile extends Label {
 
     // Layout method for Tile depending on its Row and Column
     void setLayoutCordinate() {
-        setLayoutX(53*getI_()+4);
-        setLayoutY(53*getJ_()+4);
+        setLayoutX(53 * getI_() + plb);
+        setLayoutY(53 * getJ_() + plb);
     }
 
     void setText() {
         super.setText(String.valueOf(getValue()));
         if (value < 15) {
-            setTextFill(Color.DARKORANGE);
+            setTextFill(Color.BLACK);
         } else {
             setTextFill(Color.WHITE);
         }
-        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(getValue())), new CornerRadii(2), null)));
+        setBackground(new Background(new BackgroundFill(Paint.valueOf(Components.getColorForKey(getValue())), new CornerRadii(3), null)));
     }
 }
