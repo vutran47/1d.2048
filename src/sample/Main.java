@@ -26,7 +26,8 @@ import static sample.Controller.*;
 public class Main extends Application{
     static int glb = 4; // row x column
     static int slb = 1; // number of tile for each spawning
-    static int plb = 7; //paddling between title
+    static int plb = 5; // paddling between title
+    static int crlb = 65; // tile size = crlb - plb
     boolean stopall;
     private Scene scene;
 
@@ -40,11 +41,11 @@ public class Main extends Application{
 
         //region Preparing Basic Interface
         group = new Group();
-        group.prefHeight(53 * glb + plb * 2);
-        group.prefWidth(53 * glb + plb * 2);
+        group.prefHeight(crlb * glb + plb);
+        group.prefWidth(crlb * glb + plb);
 
         // Prepare a dark background
-        Rectangle background = new Rectangle(53 * glb + plb * 1.5, 53 * glb + plb * 1.5, Paint.valueOf("#D9BF9C"));
+        Rectangle background = new Rectangle(crlb * glb + plb, crlb * glb + plb, Paint.valueOf("#D9BF9C"));
         background.setArcHeight(7);
         background.setArcWidth(7);
         group.getChildren().add(background);
@@ -52,12 +53,12 @@ public class Main extends Application{
         // Prepare tile placeholders
         for (int i = 0; i < glb ; i++) {
             for (int j = 0; j < glb; j++) {
-                Rectangle rect = new Rectangle(50,50,Paint.valueOf("#F2E7D8"));
+                Rectangle rect = new Rectangle(crlb-plb,crlb-plb,Paint.valueOf("#F2E7D8"));
                 group.getChildren().add(rect);
-                rect.setX(53 * i + plb);
-                rect.setY(53 * j + plb);
-                rect.setArcWidth(6);
-                rect.setArcHeight(6);
+                rect.setX(crlb * i + plb);
+                rect.setY(crlb * j + plb);
+                rect.setArcWidth(2*plb);
+                rect.setArcHeight(2*plb);
             }
         }
 
@@ -75,7 +76,7 @@ public class Main extends Application{
         }
 
         // Attach all to the parent layout
-        scene = new Scene(new BorderPane(group), 53*glb+70, 53*glb+70);
+        scene = new Scene(new BorderPane(group), crlb*glb+70, crlb*glb+70);
         primaryStage.setScene(scene);
         primaryStage.setTitle("2048 Bach Mai version");
         primaryStage.setResizable(false);
@@ -110,7 +111,7 @@ public class Main extends Application{
             vbox.setOpacity(0);
             vbox.setAlignment(Pos.CENTER);
             group.getChildren().add(vbox);
-            vbox.setPrefSize(53 * glb + 1.5 * plb, 53 * glb + 1.5 * plb);
+            vbox.setPrefSize(crlb * glb + plb, crlb * glb + plb);
 
             // Animation for the Vbox to show
             FadeTransition ft = new FadeTransition(Duration.millis(100),vbox);

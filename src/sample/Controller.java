@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static sample.Main.glb;
 import static sample.Main.slb;
+import static sample.Main.crlb;
 
 public class Controller {
     // Static attributes and collections
@@ -238,7 +239,7 @@ class Logic_move {
         switch (kc) {
             case UP:
                 if (tile.getJ_() != 0) {
-                    delta = tile.getJ_()*-53;
+                    delta = tile.getJ_()*-crlb;
                     tt.setToY(delta);
                     tile.setJ_(0);
                     tt.play();
@@ -248,7 +249,7 @@ class Logic_move {
 
             case DOWN:
                 if (tile.getJ_() != (glb-1)) {
-                    delta = ((glb-1)-tile.getJ_())*53;
+                    delta = ((glb-1)-tile.getJ_())*crlb;
                     tt.setToY(delta);
                     tile.setJ_((glb-1));
                     tt.play();
@@ -258,7 +259,7 @@ class Logic_move {
 
             case RIGHT:
                 if (tile.getI_() != (glb-1)) {
-                    delta = ((glb-1)-tile.getI_())*53;
+                    delta = ((glb-1)-tile.getI_())*crlb;
                     tt.setToX(delta);
                     tile.setI_((glb-1));
                     tt.play();
@@ -268,7 +269,7 @@ class Logic_move {
 
             case LEFT:
                 if (tile.getI_() != 0) {
-                    delta = tile.getI_()*-53;
+                    delta = tile.getI_()*-crlb;
                     tt.setToX(delta);
                     tile.setI_(0);
                     tt.play();
@@ -291,28 +292,28 @@ class Logic_move {
         //region Direction handler
         switch (kc) {
             case UP:
-                delta = check_merge_condition? (t_dc.getJ_()-t_m.getJ_())*53 : (t_dc.getJ_()-t_m.getJ_() + 1)*53;
+                delta = check_merge_condition? (t_dc.getJ_()-t_m.getJ_())*crlb : (t_dc.getJ_()-t_m.getJ_() + 1)*crlb;
                 tt.setToY(delta);
                 t_m.setJ_(check_merge_condition? t_dc.getJ_() : t_dc.getJ_() + 1);
                 tt.play();
                 break;
 
             case DOWN:
-                delta = check_merge_condition? (t_dc.getJ_()-t_m.getJ_())*53 : (t_dc.getJ_()-t_m.getJ_() - 1)*53;
+                delta = check_merge_condition? (t_dc.getJ_()-t_m.getJ_())*crlb : (t_dc.getJ_()-t_m.getJ_() - 1)*crlb;
                 tt.setToY(delta);
                 t_m.setJ_(check_merge_condition? t_dc.getJ_() : t_dc.getJ_() - 1);
                 tt.play();
                 break;
 
             case RIGHT:
-                delta = check_merge_condition? (t_dc.getI_()-t_m.getI_())*53 : (t_dc.getI_()-t_m.getI_() - 1)*53;
+                delta = check_merge_condition? (t_dc.getI_()-t_m.getI_())*crlb : (t_dc.getI_()-t_m.getI_() - 1)*crlb;
                 tt.setToX(delta);
                 t_m.setI_(check_merge_condition? t_dc.getI_() : t_dc.getI_() - 1);
                 tt.play();
                 break;
 
             case LEFT:
-                delta = check_merge_condition? (t_dc.getI_()-t_m.getI_())*53 : (t_dc.getI_()-t_m.getI_() + 1)*53;
+                delta = check_merge_condition? (t_dc.getI_()-t_m.getI_())*crlb : (t_dc.getI_()-t_m.getI_() + 1)*crlb;
                 tt.setToX(delta);
                 t_m.setI_(check_merge_condition? t_dc.getI_() : t_dc.getI_() + 1);
                 tt.play();
