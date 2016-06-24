@@ -8,9 +8,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-
 import java.util.TreeMap;
-import java.util.regex.Matcher;
 
 import static sample.Main.glb;
 import static sample.Main.plb;
